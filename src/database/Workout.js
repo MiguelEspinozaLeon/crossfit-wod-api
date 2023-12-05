@@ -1,7 +1,9 @@
-import { createRequire } from 'node:module';
 import { saveToDatabase } from './utils.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const DB = require('./db.json')
+
+import { client } from '../config/database.js';
 
 /**
  * @openapi
@@ -141,3 +143,4 @@ export const updateOneWorkout = (workoutId, changes) => {
         throw { status: error?.status || 500, message: error?.message || error };
     }
 }
+

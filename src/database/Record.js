@@ -2,6 +2,7 @@ import { createRequire } from 'node:module';
 import { saveToDatabase } from './utils.js';
 const require = createRequire(import.meta.url);
 const DB = require('./db.json')
+import { client } from '../config/database.js';
 
 export const getRecordForWorkout = (workoutId) => {
     try {
@@ -19,4 +20,12 @@ export const getRecordForWorkout = (workoutId) => {
             message: error?.message || error
         }
     }
+}
+
+
+export const testPgDb = async() => {
+    await client.connect()
+    const result = await client.query('SELECT NOW()')
+    console.log(result)
+    await client.end();
 }
