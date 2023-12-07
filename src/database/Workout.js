@@ -2,9 +2,7 @@ import { saveToDatabase } from './utils.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const DB = require('./db.json')
-
-import { client } from '../config/database.js';
-
+import * as db from '../config/database.js'
 /**
  * @openapi
  * components:
@@ -44,15 +42,22 @@ import { client } from '../config/database.js';
  *           example: ["Split the 21 thrusters as needed", "Try to do the 9 and 6 thrusters unbroken", "RX Weights: 115lb/75lb"]
  */
 
-export const getAllWorkouts = (filterParams) => {
+export const getAllWorkouts = async(filterParams) => {
     try {
-        let workouts = DB.workouts;
-        if (filterParams.mode) {
-            return DB.workouts.filter((workout) => 
-                workout.mode.toLowerCase().includes(filterParams.mode)
-            )
-        }
-        return workouts;
+        const query = `SELECT
+        w.id,
+        w.name,
+        w.mode,
+        ARRAY_AGG(DISTINCT e.name) AS exercises,
+        ARRAY_AGG(DISTINCT eq.name) AS equipment
+        FROM workouts w
+        LEFT JOIN exercises e ON w.id = e.workout_id
+        LEFT JOIN equipment eq ON w.id = eq.workout_id
+        GROUP BY w.id, w.name;`
+        const res = await db.query(query);
+
+        //console.log('workouts', res.rows)
+        return res.rows
     } catch (error) {
         throw {status: 500, message: error}
     }

@@ -1,10 +1,11 @@
 import * as workoutService from '../services/workoutService.js'
 
 
-export const getAllWorkouts = (req, res) => {
+export const getAllWorkouts = async(req, res) => {
     const { mode } = req.query;
     try {
-        const allWorkouts = workoutService.getAllWorkouts({mode})
+        const allWorkouts = await workoutService.getAllWorkouts({mode})
+        //console.log(allWorkouts)
         res.send({status: 'OK', data: allWorkouts});
     } catch (error) {
         res

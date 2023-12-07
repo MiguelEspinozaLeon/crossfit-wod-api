@@ -1,9 +1,9 @@
 import * as Workout from '../database/Workout.js'
 import { v4 as uuidv4 } from 'uuid';
 
-export const getAllWorkouts = (filterParams) => {
+export const getAllWorkouts = async(filterParams) => {
   try {
-    const allWorkouts = Workout.getAllWorkouts(filterParams);
+    const allWorkouts = await Workout.getAllWorkouts(filterParams);
     return allWorkouts;  
   } catch (error) {
     throw error;
